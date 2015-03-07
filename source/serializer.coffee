@@ -1,18 +1,16 @@
-Mapper = require './mapper'
 Context = require './context'
 
-isRef = (data) ->
-  return false unless data? or data instanceof Object
-
-  count = 0
-  for key of data
-    if ++count > 1 then return false
-
-  unless key is '$' then return false
-
-  return data.$
-
 module.exports = class Serializer
+  isRef = (data) ->
+    return false unless data? or data instanceof Object
+
+    count = 0
+    for key of data
+      if ++count > 1 then return false
+
+    unless key is '$' then return false
+
+    return data.$
 
   constructor: (@parentContext) ->
     return (data) =>
