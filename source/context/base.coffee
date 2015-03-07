@@ -1,4 +1,4 @@
-module.exports = class Context
+module.exports = class BaseContext
   constructor: (parent) ->
     @parent = null
     @root = this
@@ -6,15 +6,26 @@ module.exports = class Context
     @keys = []
     @count = {}
 
-    if parent instanceof Context
+    if parent
       @parent = parent
       @root = @parent.root
+
+  ref: (data) ->
+    return unless data? or data instanceof Object
+
+    count = 0
+    for key of data then return if ++count > 1
+    unless key is '$' then return
+
+    return data.$
 
   has: (data) ->
     return @keys[i] if -1 isnt i = @items.indexOf data
     return @parent?.has data
 
-  get: (key) -> return @items[i] if -1 isnt i = @keys.indexOf key
+  get: (key) ->
+    return @items[i] if -1 isnt i = @keys.indexOf key
+    return @parent?.get key
 
   put: (data, key) ->
     @keys.push key
@@ -42,3 +53,4 @@ module.exports = class Context
         delete @count[key]
 
       return [key, count]
+

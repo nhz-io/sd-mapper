@@ -36,9 +36,8 @@ $.gulp.task 'build', [ 'clean', 'lint'], ->
 $.gulp.task 'build-browser', [ 'build' ], ->
   re = /module.exports\s*=/
   $.gulp
-    .src [ "#{_.build}/index.js" ]
+    .src [ "#{_.build}/sdm.js" ]
     .pipe $.replace re, 'window.SDM ='
-    .pipe $.coffee bare:true
     .pipe $.browserify insertGlobals:false
     .pipe $.rename 'sdm.js'
     .pipe $.gulp.dest "./"

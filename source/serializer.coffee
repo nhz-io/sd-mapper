@@ -1,34 +1,18 @@
-Context = require './context'
+Context = require './context/serializer'
 
 module.exports = class Serializer
-  isRef = (data) ->
-    return false unless data? or data instanceof Object
+  @Context = Context
 
-    count = 0
-    for key of data
-      if ++count > 1 then return false
-
-    unless key is '$' then return false
-
-    return data.$
-
-  constructor: (@parentContext) ->
-    return (data) =>
-      context = new Context @parentContext
-      @serialize data, new Context @parentContext
-      data = @serialize data, context
-      return @compact data, context
+  constructor: (parentContext) -> @context = new Context parentContext
 
   serialize: (data, context) ->
     unless data? then return data # null or undefined
     if (type = typeof data) is 'function' then return undefined
-    if (type is 'boolean') or (type is 'number') then return data
+    if type in [ 'string', 'boolean', 'number' ] then return data
+    if data instanceof RegExp then return data
 
     [key, count] = context.add data
     if count > 1 then return $:key
-
-    if (type is 'string') or (data instanceof RegExp)
-      return $:[key, data]
 
     if data instanceof Array
       result = []
@@ -50,9 +34,10 @@ module.exports = class Serializer
 
     unless data? then return data # null or undefined
     if (type = typeof data) is 'function' then return undefined
-    if (type is 'boolean') or (type is 'number') then return data
+    if type in [ 'string', 'boolean', 'number' ] then return data
+    if data instanceof RegExp then return data
 
-    unless (ref = isRef data) then return data
+    unless (ref = context.ref data) then return data
     unless ref instanceof Array then return data
 
     [key, value] = ref
