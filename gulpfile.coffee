@@ -10,6 +10,7 @@ $ =
   run        :require 'run-sequence'
   uglify     :require 'gulp-uglify'
   rename     :require 'gulp-rename'
+  browserify :require 'gulp-browserify'
 
 $.gulp.task 'default', (cb) -> $.run [ 'dist', 'dist-browser' ], cb
 
@@ -32,13 +33,15 @@ $.gulp.task 'build', [ 'clean', 'lint'], ->
     .pipe $.replace re, '$1 = require("extends__")'
     .pipe $.gulp.dest _.build
 
-$.gulp.task 'build-browser', [ 'clean-browser', 'lint'], ->
-  re = /module\.exports/
+$.gulp.task 'build-browser', [ 'build' ], ->
+  re = /module.exports\s*=/
   $.gulp
-    .src [ "#{_.source}/smd.coffee" ]
-    .pipe $.replace re, 'this.SDM'
-    .pipe $.coffee bare:false
-    .pipe $.gulp.dest './'
+    .src [ "#{_.build}/index.js" ]
+    .pipe $.replace re, 'window.SDM ='
+    .pipe $.coffee bare:true
+    .pipe $.browserify insertGlobals:false
+    .pipe $.rename 'sdm.js'
+    .pipe $.gulp.dest "./"
 
 $.gulp.task 'test', [ 'build' ], ->
   $.gulp
