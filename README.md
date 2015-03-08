@@ -4,7 +4,8 @@
 
 * Convert Cyclic objects into storable JSON
 * Convert storable JSON into Cyclic objects
-* Filters out `functions`
+* Serializer Filters out `functions`
+* Deserializer allows `functions`
 
 ## Install
 ```
@@ -30,6 +31,9 @@ gulp
 #### [MIT](LICENSE)
 
 ## VERSION
+#### 0.0.2
+* Export classes
+
 #### 0.0.1
 
 [travis-image]: https://travis-ci.org/nhz-io/sdm.svg

@@ -264,14 +264,21 @@ module.exports = Deserializer = (function() {
 })();
 
 },{"./context/deserializer":2}],5:[function(require,module,exports){
-var Deserializer, Serializer;
+var BaseContext, Deserializer, Serializer;
 
 Serializer = require('./serializer');
 
 Deserializer = require('./deserializer');
 
+BaseContext = require('./context/base');
+
 window.SDM = {
-  Serializer: function(context) {
+  Serializer: Serializer,
+  Deserializer: Deserializer,
+  BaseContext: BaseContext,
+  SerializerContext: Serializer.Context,
+  DeserializerContext: Deserializer.Context,
+  serializer: function(context) {
     var serializer;
     serializer = new Serializer(context);
     return function(data) {
@@ -280,7 +287,7 @@ window.SDM = {
       return serializer.compact(data, context);
     };
   },
-  Deserializer: function(context) {
+  deserializer: function(context) {
     var deserializer;
     deserializer = new Deserializer(context);
     return function(data) {
@@ -290,7 +297,7 @@ window.SDM = {
   }
 };
 
-},{"./deserializer":4,"./serializer":6}],6:[function(require,module,exports){
+},{"./context/base":1,"./deserializer":4,"./serializer":6}],6:[function(require,module,exports){
 var Context, Serializer;
 
 Context = require('./context/serializer');
